@@ -18,8 +18,8 @@ function eliminarViajeYPasajeros($objViaje) {
             $objViaje->eliminar();
             echo "Viaje borrado con éxito.\n";
         } else {
-            echo "Hay " . $cantidadPasajeros . " pasajeros en el viaje que desea eliminar.\n";
-            echo "¿Desea eliminar los pasajeros del viaje? (Ingrese 's' para sí / 'n' para no)\n";
+            echo "Hay " . $cantidadPasajeros . " pasajero/s en el viaje que desea eliminar.\n";
+            echo "¿Desea eliminar el/los pasajero/s del viaje? (Ingrese 's' para sí / 'n' para no)\n";
             $rtaBorrarPasajeros = trim(fgets(STDIN));
 
             if ($rtaBorrarPasajeros == 's') {
@@ -69,31 +69,6 @@ function eliminarResponsable($objResponsable) {
         echo "El responsable que desea eliminar no se encuentra en nuestra base de datos.\n";
     }
 }
-
-/*
-function contarPasajeros($idViaje) {
-    $objBase = new BaseDatos();
-    $cantidad = 0;
-
-    if ($objBase->Iniciar()) {
-        $consulta = "SELECT COUNT(*) as cantidad FROM pasajero WHERE idviaje = " . $idViaje;
-        if ($objBase->Ejecutar($consulta)) {
-            $resultado = $objBase->Registro();
-            if ($resultado) {
-                $cantidad = $resultado['cantidad'];
-            } else {
-                echo "Error en la consulta: " . $objBase->getError();
-            }
-        } else {
-            echo "Error en la consulta: " . $objBase->getError();
-        }
-    } else {
-        echo "Error al iniciar la base de datos: " . $objBase->getError();
-    }
-
-    return $cantidad;
-}
-*/
 
 function mostrarColeccion($coleccion) {
     $i = 1;
@@ -269,10 +244,10 @@ echo "[ Ingrese una de las opciones deseadas ]\n";
 do {
     echo "Ingrese (1) para ver información de un viaje.\n";
     echo "Ingrese (2) para vender pasaje.\n";
-    echo "Ingrese (3) para ingresar un viaje.\n";
-    echo "Ingrese (4) para ver viajes de la empresa.\n";
+    echo "Ingrese (3) para crear un nuevo viaje.\n";
+    echo "Ingrese (4) para ver viajes de una empresa.\n";
     echo "Ingrese (5) para modificar viaje, pasajero o responsable del viaje.\n";
-    echo "Ingrese (6) para eliminar un viaje o un pasajero.\n";
+    echo "Ingrese (6) para eliminar un viaje, pasajero o responsable del viaje.\n";
     echo "Ingrese (7) para ingresar empresa o responsable.\n";
     echo "Ingrese (8) para salir.\n";
     $valor = trim(fgets(STDIN));
@@ -292,42 +267,53 @@ do {
             }
             break;
         case '2':
+            $objViaje = new Viaje();
+            $colViajes = $objViaje->listar();
+            $objPasajero = new Pasajero();
+
+            echo "Destinos disponibles:\n";
+            foreach ($colViajes as $viaje) {
+                $idviaje = $viaje->getIdviaje();
+                $colPasajerosViaje = $objPasajero->listar('idviaje ='. $idviaje);
+                $cantAsientosDisponible = $viaje->getVcantmaxpasajeros() - count($colPasajerosViaje);
+                $colViajesDisponible = [];
+                if ($cantAsientosDisponible > 0) {
+                    echo $viaje;
+                    echo "Hay ". ($cantAsientosDisponible) . " asientos disponibles.\n";
+                    array_push($colViajesDisponible, $viaje);
+                }
+            }
+
             echo "Ingrese el destino:  \n";
             $destino = trim(fgets(STDIN));
-            $objViaje = new Viaje();
-            $colViajes = $objViaje->listar("vdestino="."'$destino'");
-            if ($colViajes != null) {
-                mostrarColeccion($colViajes);
-                echo "Ingrese el id de viaje que desea comprar: ";
-                $id = trim(fgets(STDIN));  
-                if ($objViaje->Buscar($id)) {
-                    $cantidadPasajeros = contarPasajeros(new Pasajero(), $id);
-                    if ($cantidadPasajeros < $objViaje->getVcantmaxpasajeros()) {
-                        $asientosDisponibles = $objViaje->getVcantmaxpasajeros() - $cantidadPasajeros;
-                        echo "Hay " . $asientosDisponibles . " asientos disponibles.\n";
-                        echo "Ingrese el nombre: ";
-                        $nombre = trim(fgets(STDIN));
-                        echo "Ingrese el apellido: ";
-                        $apellido = trim(fgets(STDIN));
-                        echo "Ingrese el DNI del pasajero: ";
-                        $dni = trim(fgets(STDIN));
-                        echo "Ingrese el numero de telefono: ";
-                        $telefono = trim(fgets(STDIN));
-                        $objPasajero = new Pasajero();
-                        $objPasajero->cargar($dni, $nombre, $apellido, $telefono, $objViaje);
-                        $objPasajero->insertar();
-                        echo "\n *** Se vendio el pasaje con éxito *** :v \n";
-                    }
-                    else {
-                        echo "No hay lugares en ese viaje para vender.\n";
-                    }
+            $colViajesDestino = [];
+            foreach ($colViajesDisponible as $viaje) {
+                if ($viaje->getVdestino() == $destino) {
+                    $colViajesDestino[] = $viaje;
+                }
+            }
+            mostrarColeccion($colViajesDestino);
+            echo "Ingrese el id de viaje que desea comprar: ";
+            $id = trim(fgets(STDIN));
+            if ($objViaje->Buscar($id)) {
+                echo "Ingrese el nombre: ";
+                $nombre = trim(fgets(STDIN));
+                echo "Ingrese el apellido: ";
+                $apellido = trim(fgets(STDIN));
+                echo "Ingrese el DNI del pasajero: ";
+                $dni = trim(fgets(STDIN));
+                echo "Ingrese el numero de telefono: ";
+                $telefono = trim(fgets(STDIN));
+                $objPasajero->cargar($dni, $nombre, $apellido, $telefono, $objViaje);
+                if ($objPasajero->insertar()) {
+                    echo "\n  Se vendio el pasaje con éxito  :v \n";
                 }
                 else {
-                    echo "Error al ingresar el codigo.\n";
+                    echo "No se cargo correctamente. Intente nuevamente.\n";
                 }
             }
             else {
-                echo "No hay lugares en ese viaje para vender.\n";
+                echo "Error al ingresar el id: " . $id . "\n";
             }
             break;
         case '3':
@@ -404,7 +390,6 @@ do {
             modificarDatos();
             break;
         case '6':
-            // Elimina un viaje o un pasajero.
             echo "Ingrese (1) para eliminar un viaje.\n";
             echo "Ingrese (2) para eliminar un pasajero.\n";
             echo "Ingrese (3) para eliminar un responsable.\n";
@@ -412,32 +397,6 @@ do {
             switch ($opcionEliminar) {
                 case '1':
                     $objViaje = listarSeleccionar('Viaje', "Ingrese el ID del viaje que desea eliminar: ");
-                    /*
-                    if ($objViaje != null) {
-                        //$cantidadPasajeros = contarPasajeros($objViaje->getIdViaje());
-                        $cantidadPasajeros = contarPasajeros(new Pasajero(), $objViaje->getIdviaje());
-                        if ($cantidadPasajeros == 0) {
-                            $objViaje->eliminar();
-                            echo "Viaje borrado con éxito.\n";
-                        } else {
-                            echo "Hay " . $cantidadPasajeros . " pasajeros en el viaje que desea eliminar.\n";
-                            echo "¿Desea eliminar los pasajeros del viaje? (Ingrese 's' para sí / 'n' para no)\n";
-                            $rtaBorrarPasajeros = trim(fgets(STDIN));
-                            if ($rtaBorrarPasajeros == 's') {
-                                $objPasajero = new Pasajero();
-                                $pasajerosDelViaje = $objPasajero->listar("idviaje = " . $objViaje->getIdviaje());
-                                foreach ($pasajerosDelViaje as $pasajero) {
-                                    $pasajero->eliminar();
-                                }
-                                $objViaje->eliminar();
-                                echo "Viaje y pasajeros borrados con éxito.\n";
-                            } else {
-                                echo "No se desea borrar pasajeros, por ende no se puede eliminar el viaje.\n";
-                            }
-                        }
-                    } else {
-                        echo "El viaje que desea eliminar ya no se encuentra en nuestra base de datos.\n";
-                    }*/
                     eliminarViajeYPasajeros($objViaje);
                     break;
                 case '2':
@@ -453,18 +412,6 @@ do {
                     break;
                 case '3':
                     $objResponsable = listarSeleccionar('Responsable', "Ingrese el número de empleado del responsable que desea eliminar: ");
-                    /*
-                    if ($objResponsable != null) {
-                        if ($objResponsable->eliminar()) {
-                            echo "Responsable borrado con éxito.\n";
-                        }
-                        else {
-                            echo $objResponsable->getMensajeOperacion();
-                        }
-                    }
-                    else {
-                        echo "El responsable del viaje que desea eliminar ya no se encuentra en nuestra base de datos.\n";
-                    }*/
                     eliminarResponsable($objResponsable);
                     break;
                 default:

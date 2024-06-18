@@ -1,4 +1,4 @@
-<?
+<?php
 
 class Pasajero {
     private $pdocumento;
@@ -78,12 +78,12 @@ class Pasajero {
 
     public function __toString()
     {
-        return "---- Información del pasajero ----\nNúmero de documento: " . $this->getPdocumento() . "\nNombre: " . $this->getPnombre() . " " . $this->getPapellido() . "\nTeléfono: " . $this->getPtelefono() . "\nInformación del pasaje:\n" . $this->getObjViaje();
+        return "Número de documento: " . $this->getPdocumento() . "\nNombre: " . $this->getPnombre() . " " . $this->getPapellido() . "\nTeléfono: " . $this->getPtelefono() . "\nId del pasaje: " . $this->getObjViaje()->getIdviaje();
     }
 
     public function Buscar($dni) { 
 		$base = new BaseDatos();  
-		$consulta = "Select * from pasajero where pdocumento = " . $dni;
+		$consulta = "Select * from pasajero where pdocumento = '" . $dni . "'";
 		$resp = false; 
 		if ($base->Iniciar()) { 
 			if ($base->Ejecutar($consulta)) {

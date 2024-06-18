@@ -86,7 +86,7 @@ class Viaje{
 
     public function __toString()
     {
-        return "---- Información del viaje ----\nId viaje: " . $this->getIdviaje() . "\nDestino: " . $this->getVdestino() . "\nCantidad máxima de pasajeros: " . $this->getVcantmaxpasajeros() . "\nEmpresa:\n" . $this->getObjEmpresa() . "Responsable del viaje:\n" . $this->getObjResponsable() . "Importe: " . $this->getVimporte() . "\n";
+        return "Id viaje: " . $this->getIdviaje() . "\nDestino: " . $this->getVdestino() . "\nCantidad máxima de pasajeros: " . $this->getVcantmaxpasajeros() . "\nEmpresa: " . $this->getObjEmpresa()->getEnombre() . "\nResponsable del viaje:\n" . $this->getObjResponsable() . "Importe: " . $this->getVimporte() . "\n";
     }
 
     public function Buscar($idViaje) { 
@@ -169,7 +169,7 @@ class Viaje{
 			    $resp = true;
 			} 
             else {
-				$this->setMensajeOperacion($base->getError()); 					
+				$this->setMensajeOperacion($base->getError());					
 			}
 		} 
         else {

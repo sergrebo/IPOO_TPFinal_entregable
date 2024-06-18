@@ -133,8 +133,8 @@ class Responsable {
 
         $consultaInsertar = "INSERT INTO responsable (rnumerolicencia, rnombre, rapellido) VALUES (" . $this->getRnumerolicencia() . ", '" . $this->getRnombre() . "', '" . $this->getRapellido() . "')";
 		
-        if($base->Iniciar()){ 
-            if($numEmpleado = $base->devuelveIDInsercion($consultaInsertar)) {
+        if ($base->Iniciar()) { 
+            if ($numEmpleado = $base->devuelveIDInsercion($consultaInsertar)) {
                 $this->setRnumeroempleado($numEmpleado);
                 $resp = true;
             }
