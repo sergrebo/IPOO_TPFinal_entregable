@@ -255,14 +255,11 @@ do {
     switch ($valor) {
         case '1':
             // Información de un viaje.
-            $objViaje = new Viaje();
-            $colViajes = $objViaje->listar();
-            mostrarColeccion($colViajes);
-            echo "Ingrese el ID del viaje: ";
-            $idviaje = trim(fgets(STDIN));
-            if ($objViaje->Buscar($idviaje)) {
+            $objViaje = listarSeleccionar("Viaje", "Ingrese el ID del viaje: ");
+            if ($objViaje != null) {
                 echo $objViaje;
-            } else {
+            }
+            else {
                 echo "Viaje no encontrado.\n";
             }
             break;
@@ -272,11 +269,11 @@ do {
             $objPasajero = new Pasajero();
 
             echo "Destinos disponibles:\n";
+            $colViajesDisponible = [];
             foreach ($colViajes as $viaje) {
                 $idviaje = $viaje->getIdviaje();
                 $colPasajerosViaje = $objPasajero->listar('idviaje ='. $idviaje);
                 $cantAsientosDisponible = $viaje->getVcantmaxpasajeros() - count($colPasajerosViaje);
-                $colViajesDisponible = [];
                 if ($cantAsientosDisponible > 0) {
                     echo $viaje;
                     echo "Hay ". ($cantAsientosDisponible) . " asientos disponibles.\n";
