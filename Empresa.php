@@ -61,8 +61,7 @@ class Empresa {
             if ($base->Ejecutar($consulta)) {
                 if ($row = $base->Registro()) {
                     $this->setIdempresa($idempresa);
-                    $this->setEnombre($row['enombre']);
-                    $this->setEdireccion($row['edireccion']);
+                    $this->cargar($row['enombre'], $row['edireccion']);
                     $resp = true;
                 }                
             } else {
@@ -92,7 +91,9 @@ class Empresa {
                 $arregloEmpresa = array();
                 while ($row = $base->Registro()) {
                     $empresa = new Empresa();
-                    $empresa->Buscar($row['idempresa']);
+                    $empresa->cargar($row['enombre'], $row['edireccion']);
+                    $empresa->setIdempresa($row['idempresa']);
+
                     array_push($arregloEmpresa, $empresa);
                 }
             } else {

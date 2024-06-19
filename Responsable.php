@@ -82,13 +82,11 @@ class Responsable {
 		if ($base->Iniciar()) { 
 			if ($base->Ejecutar($consulta)) {
 				if ($row2 = $base->Registro()) {
-                    $this->setRnumeroempleado($numEmpleado);					 
-					$this->setRnumerolicencia($row2["rnumerolicencia"]);
-					$this->setRnombre($row2["rnombre"]);
-					$this->setRapellido($row2["rapellido"]);
+                    $this->setRnumeroempleado($numEmpleado);
+                    $this->cargar($row2["rnumerolicencia"], $row2["rnombre"], $row2["rapellido"]);
 					$resp= true;
 				}				
-		 	}	
+		 	}
             else {
 		 		$this->setMensajeOperacion($base->getError());
 			}
@@ -113,9 +111,9 @@ class Responsable {
 			if ($base->Ejecutar($consultaResponsables)) {				
 				$arregloResponsables = [];
 				while ($row2 = $base->Registro()) {
-					$numEmpleado = $row2['rnumeroempleado'];
-					$responsable = new Responsable();
-					$responsable->Buscar($numEmpleado);
+                    $responsable = new Responsable();
+					$responsable->setRnumeroempleado($row2['rnumeroempleado']);
+                    $responsable->cargar($row2["rnumerolicencia"], $row2["rnombre"], $row2["rapellido"]);
 					array_push($arregloResponsables, $responsable);
 				}
 		 	}	

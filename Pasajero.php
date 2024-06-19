@@ -92,15 +92,11 @@ class Pasajero {
 		$resp = false; 
 		if ($base->Iniciar()) { 
 			if ($base->Ejecutar($consulta)) {
-				if ($row2 = $base->Registro()) {					 
-				    $this->setPdocumento($dni);
-					$this->setPnombre($row2["pnombre"]);
-					$this->setPapellido($row2["papellido"]);
-					$this->setPtelefono($row2["ptelefono"]);
+				if ($row2 = $base->Registro()) {
                     $idviaje = ($row2["idviaje"]);
-					$objViaje = new Viaje();
+                    $objViaje = new Viaje();
 					$objViaje->Buscar($idviaje);
-					$this->setObjViaje($objViaje);
+                    $this->cargar($dni, $row2["pnombre"], $row2["papellido"], $row2["ptelefono"], $objViaje);					 
                     $resp = true;
 				}				
 			
@@ -130,9 +126,11 @@ class Pasajero {
 				$arregloPasajeros = [];
 
 				while($row2 = $base->Registro()) {
-					$pdocumento = $row2['pdocumento'];
-					$objPasajero = new Pasajero();
-                    $objPasajero->Buscar($pdocumento);
+                    $idviaje = ($row2["idviaje"]);
+                    $objViaje = new Viaje();
+					$objViaje->Buscar($idviaje);
+                    $objPasajero = new Pasajero();
+                    $objPasajero->cargar($row2['pdocumento'], $row2["pnombre"], $row2["papellido"], $row2["ptelefono"], $objViaje);
 					array_push($arregloPasajeros, $objPasajero);
 				}
 		 	}	

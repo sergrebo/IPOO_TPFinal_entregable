@@ -103,20 +103,12 @@ class Viaje{
 		if ($base->Iniciar()) { 
 			if ($base->Ejecutar($consulta)) {
 				if($row2 = $base->Registro()){	
-                    $this->setIdviaje($idViaje);				 
-					$this->setVdestino($row2["vdestino"]);
-					$this->setVcantmaxpasajeros($row2["vcantmaxpasajeros"]);
-
                     $objEmpresa = new Empresa();
                     $objEmpresa->Buscar($row2["idempresa"]);
-                    $this->setObjEmpresa($objEmpresa);
-
                     $objResponsable = new Responsable();
                     $objResponsable->Buscar($row2["rnumeroempleado"]);
-                    $this->setObjResponsable($objResponsable);
-
-                    $this->setVimporte($row2["vimporte"]);
-
+                    $this->setIdviaje($idViaje);
+                    $this->cargar($row2["vdestino"], $row2["vcantmaxpasajeros"], $objEmpresa, $objResponsable, $row2["vimporte"]);
                     $resp= true;
 				}				
 		 	}	
@@ -145,9 +137,14 @@ class Viaje{
 				$arregloViajes = [];
 
 				while($row2 = $base->Registro()) {
-					$idViaje = $row2['idviaje'];
                     $objViaje = new Viaje();
-                    $objViaje->Buscar($idViaje);
+                    $objViaje->setIdviaje($row2['idviaje']);
+                    $objEmpresa = new Empresa();
+                    $objEmpresa->Buscar($row2["idempresa"]);
+                    $objResponsable = new Responsable();
+                    $objResponsable->Buscar($row2["rnumeroempleado"]);
+                    $objViaje->cargar($row2["vdestino"], $row2["vcantmaxpasajeros"], $objEmpresa, $objResponsable, $row2["vimporte"]);
+
 					array_push($arregloViajes, $objViaje);
 				}	
 		 	}	
