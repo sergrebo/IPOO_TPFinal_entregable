@@ -86,7 +86,14 @@ class Viaje{
 
     public function __toString()
     {
-        return "Id viaje: " . $this->getIdviaje() . "\nDestino: " . $this->getVdestino() . "\nCantidad máxima de pasajeros: " . $this->getVcantmaxpasajeros() . "\nEmpresa: " . $this->getObjEmpresa()->getEnombre() . "\nResponsable del viaje:\n" . $this->getObjResponsable() . "Importe: " . $this->getVimporte() . "\n";
+        $cadena="[----------------------------------]\n";
+        $cadena.="->Id viaje: " . $this->getIdviaje() . "\n";
+        $cadena.="->Destino: " . $this->getVdestino() . "\n";
+        $cadena.="->Cantidad máxima de pasajeros: " . $this->getVcantmaxpasajeros(). "\n";
+        $cadena.="->Empresa: " . $this->getObjEmpresa()->getEnombre() . "\n";
+        $cadena.="->Responsable del viaje:\n" . $this->getObjResponsable() ."\n"; 
+        $cadena.="->Importe: " . $this->getVimporte() . "\n";
+        return $cadena;
     }
 
     public function Buscar($idViaje) { 

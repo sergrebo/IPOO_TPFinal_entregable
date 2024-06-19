@@ -78,7 +78,12 @@ class Pasajero {
 
     public function __toString()
     {
-        return "Número de documento: " . $this->getPdocumento() . "\nNombre: " . $this->getPnombre() . " " . $this->getPapellido() . "\nTeléfono: " . $this->getPtelefono() . "\nId del pasaje: " . $this->getObjViaje()->getIdviaje();
+        $cadena="\n";
+        $cadena.="          [->DNI: " . $this->getPdocumento()."] ";
+        $cadena.="[->Nombre: " . $this->getPnombre() . " " . $this->getPapellido()."]\n";
+        $cadena.="          [->Teléfono: " . $this->getPtelefono()."] "; 
+        $cadena.="[->Id del pasaje: " . $this->getObjViaje()->getIdviaje()."]\n";
+        return $cadena;
     }
 
     public function Buscar($dni) { 

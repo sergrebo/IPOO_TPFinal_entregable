@@ -123,19 +123,40 @@ function modificarPasajero($objPasajero) {
             echo "Ingrese el nuevo nombre: ";
             $nNombre = trim(fgets(STDIN));
             $objPasajero->setPnombre($nNombre);
-            $objPasajero->modificar();
+            if ($objPasajero->modificar()) {
+                echo "\n-------------- ------------\n";
+                echo "| Dato modificado con exito |\n";
+                echo "-----------------------------\n\n";
+            }
+            else {
+                echo "Algo salio mal :´V ";
+            }
             break;
         case '2':
             echo "Ingrese el nuevo apellido: ";
             $nApellido = trim(fgets(STDIN));
             $objPasajero->setPapellido($nApellido);
-            $objPasajero->modificar();
+            if ($objPasajero->modificar()) {
+                echo "\n-------------- ------------\n";
+                echo "| Dato modificado con exito |\n";
+                echo "-----------------------------\n\n";
+            }
+            else {
+                echo "Algo salio mal :´V ";
+            }
             break;
         case '3':
             echo "Ingrese el nuevo teléfono: ";
             $nTelefono = trim(fgets(STDIN));
             $objPasajero->setPtelefono($nTelefono);
-            $objPasajero->modificar();
+            if ($objPasajero->modificar()) {
+                echo "\n-------------- ------------\n";
+                echo "| Dato modificado con exito |\n";
+                echo "-----------------------------\n\n";
+            }
+            else {
+                echo "Algo salio mal :´V ";
+            }
             break;
         case '4':
             $objViaje = listarSeleccionar('Viaje', "Ingrese el ID del nuevo viaje: ");
@@ -324,59 +345,59 @@ do {
             }
             break;
         case '2':
-            $objViaje = new Viaje();
-            $colViajes = $objViaje->listar();
-            $objPasajero = new Pasajero();
-
-            echo "Destinos disponibles:\n";
-            $colViajesDisponible = [];
-            foreach ($colViajes as $viaje) {
-                $idviaje = $viaje->getIdviaje();
-                $colPasajerosViaje = $objPasajero->listar('idviaje ='. $idviaje);
-                $cantAsientosDisponible = $viaje->getVcantmaxpasajeros() - count($colPasajerosViaje);
-                if ($cantAsientosDisponible > 0) {
-                    echo $viaje;
-                    echo "     [-----------------------------]\n";
-                    echo "     ! Hay ". ($cantAsientosDisponible) . " asientos disponibles !\n";
-                    echo "     [-----------------------------]\n";
-                    array_push($colViajesDisponible, $viaje);
+                $objViaje = new Viaje();
+                $colViajes = $objViaje->listar();
+                $objPasajero = new Pasajero();
+    
+                echo "Destinos disponibles:\n";
+                $colViajesDisponible = [];
+                foreach ($colViajes as $viaje) {
+                    $idviaje = $viaje->getIdviaje();
+                    $colPasajerosViaje = $objPasajero->listar('idviaje ='. $idviaje);
+                    $cantAsientosDisponible = $viaje->getVcantmaxpasajeros() - count($colPasajerosViaje);
+                    if ($cantAsientosDisponible > 0) {
+                        echo $viaje;
+                        echo "     [-----------------------------]\n";
+                        echo "     ! Hay ". ($cantAsientosDisponible) . " asientos disponibles !\n";
+                        echo "     [-----------------------------]\n";
+                        array_push($colViajesDisponible, $viaje);
+                    }
                 }
-            }
-
-            echo "Ingrese el destino:  \n";
-            $destino = trim(fgets(STDIN));
-            $colViajesDestino = [];
-            foreach ($colViajesDisponible as $viaje) {
-                if ($viaje->getVdestino() == $destino) {
-                    $colViajesDestino[] = $viaje;
+    
+                echo "Ingrese el destino:  \n";
+                $destino = trim(fgets(STDIN));
+                $colViajesDestino = [];
+                foreach ($colViajesDisponible as $viaje) {
+                    if ($viaje->getVdestino() == $destino) {
+                        $colViajesDestino[] = $viaje;
+                    }
                 }
-            }
-            mostrarColeccion($colViajesDestino);
-            echo "Ingrese el id de viaje que desea comprar: ";
-            $id = trim(fgets(STDIN));
-            if ($objViaje->Buscar($id)) {
-                echo "Ingrese el nombre: ";
-                $nombre = trim(fgets(STDIN));
-                echo "Ingrese el apellido: ";
-                $apellido = trim(fgets(STDIN));
-                echo "Ingrese el DNI del pasajero: ";
-                $dni = trim(fgets(STDIN));
-                echo "Ingrese el numero de telefono: ";
-                $telefono = trim(fgets(STDIN));
-                $objPasajero->cargar($dni, $nombre, $apellido, $telefono, $objViaje);
-                if ($objPasajero->insertar()) {
-                    echo "     [---------------------------------------]\n";
-                    echo "     [**  Se vendio el pasaje con éxito :v **] \n";
-                    echo "     [---------------------------------------]\n";
+                mostrarColeccion($colViajesDestino);
+                echo "Ingrese el id de viaje que desea comprar: ";
+                $id = trim(fgets(STDIN));
+                if ($objViaje->Buscar($id)) {
+                    echo "Ingrese el nombre: ";
+                    $nombre = trim(fgets(STDIN));
+                    echo "Ingrese el apellido: ";
+                    $apellido = trim(fgets(STDIN));
+                    echo "Ingrese el DNI del pasajero: ";
+                    $dni = trim(fgets(STDIN));
+                    echo "Ingrese el numero de telefono: ";
+                    $telefono = trim(fgets(STDIN));
+                    $objPasajero->cargar($dni, $nombre, $apellido, $telefono, $objViaje);
+                    if ($objPasajero->insertar()) {
+                        echo "     [---------------------------------------]\n";
+                        echo "     [  Se vendio el pasaje con éxito :v ] \n";
+                        echo "     [---------------------------------------]\n";
+                    }
+                    else {
+                        echo "No se cargo correctamente. Intente nuevamente.\n";
+                    }
                 }
                 else {
-                    echo "No se cargo correctamente. Intente nuevamente.\n";
+                    echo "Error al ingresar el id: " . $id . "\n";
                 }
-            }
-            else {
-                echo "Error al ingresar el id: " . $id . "\n";
-            }
-            break;
+                break;
         case '3':
             $objEmpresa = new Empresa();
             $colEmpresa = $objEmpresa->listar();

@@ -68,8 +68,11 @@ class Responsable {
     }
 
     public function __toString()
-    {
-        return "---- Información del responsable ----\nNúmero de empleado: " . $this->getRnumeroempleado() . "\nNúmero de licencia: " . $this->getRnumerolicencia() . "\nNombre: " . $this->getRnombre() . " " . $this->getRapellido() . "\n";
+    {   $cadena= "     [-------    Información del responsable    -------]\n";
+        $cadena.="     [Número de empleado: " . $this->getRnumeroempleado() . "]";
+        $cadena.="[Número de licencia: " . $this->getRnumerolicencia() . "]\n";
+        $cadena.="     [Nombre: " . $this->getRnombre() . " " . $this->getRapellido() . "]";
+        return $cadena;
     }
 
     public function Buscar($numEmpleado) { 
